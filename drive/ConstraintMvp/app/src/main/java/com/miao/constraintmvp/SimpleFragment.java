@@ -2,14 +2,12 @@ package com.miao.constraintmvp;
 
 
 import android.os.Bundle;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 
 /**
@@ -17,14 +15,7 @@ import android.view.ViewGroup;
  */
 public class SimpleFragment
         extends Fragment
-        implements View.OnClickListener {
-
-
-    private static final String SHRINK_RATION = "H,1:0.6";
-
-    private static final String ENLARGE_RATION = "H,1:0.9";
-
-    private ConstraintLayout mConstraintView;
+        implements ViewContract.FragmentView {
 
     public SimpleFragment ( ) {
         // Required empty public constructor
@@ -39,50 +30,30 @@ public class SimpleFragment
         View view = inflater.inflate ( R.layout.fragment_simple,
                                        container,
                                        false );
-        mConstraintView = view.findViewById ( R.id.constraint_view );
-
-        view.findViewById ( R.id.button_more )
-            .setOnClickListener ( this );
-        view.findViewById ( R.id.button_less )
-            .setOnClickListener ( this );
+        ViewPresenter < SimpleFragment > viewPresenter = new ViewPresenter <> ( );
+        viewPresenter.onAttach ( this );
+        viewPresenter.setupButton ( view );
 
         return view;
     }
 
-    @Override
-    public void onClick ( View v ) {
 
-        switch ( v.getId ( ) ) {
-            case R.id.button_more:
-                adjustViewSize ( true );
-                break;
-            case R.id.button_less:
-                adjustViewSize ( false );
-                break;
-        }
+    @Override
+    public void moreButtonClicked ( ) {
+
+        Toast.makeText ( getContext ( ),
+                         "Showing more item",
+                         Toast.LENGTH_SHORT )
+             .show ( );
     }
 
-    private void adjustViewSize ( boolean moreItem ) {
+    @Override
+    public void lessButtonClicked ( ) {
 
-        ConstraintSet constraintSet = new ConstraintSet ( );
-        constraintSet.clone ( mConstraintView );
-
-        if ( moreItem ) {
-
-            constraintSet.setVisibility ( R.id.view_2,
-                                          View.VISIBLE );
-            constraintSet.setDimensionRatio ( R.id.view_1,
-                                              SHRINK_RATION );
-        }
-        else {
-
-            constraintSet.setVisibility ( R.id.view_2,
-                                          View.GONE );
-            constraintSet.setDimensionRatio ( R.id.view_1,
-                                              ENLARGE_RATION );
-        }
-
-        constraintSet.applyTo ( mConstraintView );
+        Toast.makeText ( getContext ( ),
+                         "Showing less item",
+                         Toast.LENGTH_SHORT )
+             .show ( );
     }
 
 }
